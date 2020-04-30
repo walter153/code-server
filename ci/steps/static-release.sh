@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 main() {
@@ -16,11 +15,12 @@ main() {
   done &
   pid=$!
 
-  docker build ci/image
-  imageTag="$(docker build -q ci/image)"
-  docker run -t --rm -e CI -e GITHUB_TOKEN -e TRAVIS_TAG -v "$(yarn cache dir):/usr/local/share/.cache/yarn/v6" -v "$PWD:/repo" -w /repo "$imageTag" "$*"
-
-  kill $pid
+  yarn
+  yarn vscode
+  yarn build
+  STATIC=1 yarn release
+  ./ci/build/test-static-release.sh
+  ./ci/build/archive-static-release.sh
 }
 
 main "$@"
