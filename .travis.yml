@@ -4,25 +4,29 @@ jobs:
   include:
     - name: Test
       if: tag IS blank
-      script: ./ci/image/run.sh "yarn && git submodule update --init && yarn vscode:patch && ./ci/ci.sh"
+      script: ./ci/container/exec.sh ./ci/steps/test.sh
       deploy: null
-    - name: Linux Release
-      if: tag IS present
+    - name: Linux Release #if: tag IS present
       script:
-        - travis_wait 60 ./ci/image/run.sh "yarn && yarn vscode && ci/release.sh && ./ci/build-test.sh"
-        - ./ci/release-image/push.sh
+        - travis_wait 60 ./ci/container/exec.sh ./ci/steps/static-release.sh
+        # We do not use the travis npm deploy integration as it does not allow us to
+        # deploy a subpath and and v2 which should, just errors out that the src does not exist
+        - npm publish release
+        - ./ci/steps/build-static-pkgs.sh
+        - ./ci/release-container/push.sh
     - name: Linux ARM64 Release
       if: tag IS present
       script:
-        - ./ci/image/run.sh "yarn && yarn vscode && ci/release.sh && ./ci/build-test.sh"
-        - ./ci/release-image/push.sh
+        - travis_wait 60 ./ci/container/exec.sh ./ci/steps/static-release.sh
+        - ./ci/steps/build-static-pkgs.sh
+        - ./ci/release-container/push.sh
       arch: arm64
     - name: MacOS Release
       if: tag IS present
       os: osx
       language: node_js
       node_js: 12
-      script: yarn && yarn vscode && travis_wait 60 ci/release.sh && ./ci/build-test.sh
+      script: ./ci/steps/static-release.sh
 
 before_deploy:
   - echo "$JSON_KEY" | base64 --decode > ./ci/key.json
@@ -36,16 +40,17 @@ deploy:
     target_commitish: $TRAVIS_COMMIT
     name: $TRAVIS_TAG
     file:
-      - release/*.tar.gz
-      - release/*.zip
-    on:
-      tags: true
+      - release-github/*.tar.gz
+      - release-github/*.zip
+      - release-github/*.deb
+      - release-github/*.rpm
+    on: #tags: true
   - provider: gcs
     edge: true
     bucket: "codesrv-ci.cdr.sh"
     upload_dir: "releases"
     key_file: ./ci/key.json
-    local_dir: release-upload
+    local_dir: ./release-gcp
     on:
       tags: true
       # TODO: The gcs provider fails to install on arm64.
