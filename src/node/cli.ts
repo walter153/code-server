@@ -1,3 +1,5 @@
+import * as fs from "fs-extra"
+import yaml from "js-yaml"
 import * as path from "path"
 import { field, logger, Level } from "@coder/logger"
 import { Args as VsArgs } from "../../lib/vscode/src/vs/server/ipc"
@@ -19,6 +21,7 @@ export enum LogLevel {
 export class OptionalString extends Optional<string> {}
 
 export interface Args extends VsArgs {
+  readonly config?: string
   readonly auth?: AuthType
   readonly cert?: OptionalString
   readonly "cert-key"?: string
@@ -94,6 +97,8 @@ const options: Options<Required<Args>> = {
   open: { type: "boolean", description: "Open in browser on startup. Does not work remotely." },
 
   "bind-addr": { type: "string", description: "Address to bind to in host:port." },
+
+  config: { type: "string", description: "Path to yaml config file" },
 
   // These two have been deprecated by bindAddr.
   host: { type: "string", description: "" },
@@ -274,4 +279,36 @@ export const parse = (argv: string[]): Args => {
   }
 
   return args
+}
+
+// readConfig reads the config file specified in the config flag
+// and loads it's configuration.
+//
+// Explicitly set flags take priority.
+//
+// The config file can also be passed via $CODE_SERVER_CONFIG and defaults
+// to ~/.config/code-server/config.yaml.
+export async function readConfig(args: Args): Promise<void> {
+  if (args.config === undefined) {
+    if (process.env.CODE_SERVER_CONFIG === undefined) {
+      // Let's try a default of ~/.config/code-server/config.yaml
+      return
+    }
+    args = {
+      config: process.env.CODE_SERVER_CONFIG,
+      ...args,
+    }
+  }
+
+  const configFile = await fs.readFile(args.config)
+  const config = yaml.safeLoad(configFile.toString(), {
+    filename: args.config,
+  })
+
+  for (const k in config) {
+    // Prioritize passed in flags over the config.
+    if (args[k] === undefined) {
+      args[k] = config[k]
+    }
+  }
 }
