@@ -1,5 +1,5 @@
 {
-  "name": "@coder/code-server",
+  "name": "codeserver",
   "license": "MIT",
   "version": "3.2.0-rc.6",
   "description": "Run VS Code on a remote server.",
@@ -13,7 +13,8 @@
     "vscode": "./ci/dev/vscode.sh",
     "vscode:patch": "cd ./lib/vscode && git apply ../../ci/dev/vscode.patch",
     "vscode:diff": "cd ./lib/vscode && git diff HEAD > ../../ci/dev/vscode.patch",
-    "build": "./ci/build/build-code-server.sh && ./ci/build/build-vscode.sh",
+    "build": "./ci/build/build-code-server.sh",
+    "build:vscode": "./ci/build/build-vscode.sh",
     "release": "./ci/build/build-release.sh",
     "pkg": "./ci/build/build-static-pkgs.sh",
     "_____": "",
@@ -59,7 +60,7 @@
     "vfile-message": "^2.0.2"
   },
   "dependencies": {
-    "@coder/logger": "1.1.11",
+    "@coder/logger": "1.1.12",
     "adm-zip": "^0.4.14",
     "fs-extra": "^8.1.0",
     "http-proxy": "^1.18.0",

@@ -35,7 +35,7 @@ This directory contains the scripts used to build code-server.
 
 - [./build/build-code-server.sh](./build/build-code-server.sh) (`yarn build`)
   - Builds code-server into ./out and bundles the frontend into ./dist.
-- [./build/build-vscode.sh](./build/build-vscode.sh) (`yarn build`)
+- [./build/build-vscode.sh](./build/build-vscode.sh) (`yarn build:vscode`)
   - Builds vscode into ./lib/vscode/out-vscode.
 - [./build/build-release.sh](./build/build-release.sh) (`yarn release`)
   - Bundles the output of the above two scripts into a single node module at ./release.

@@ -39,6 +39,7 @@ works internally.
 yarn
 yarn vscode
 yarn build
+yarn build:vscode
 yarn release
 node ./release # Run the built JavaScript with Node.
 ```

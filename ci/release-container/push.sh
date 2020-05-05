@@ -19,7 +19,7 @@ main() {
   docker build \
     -t "$imageTag" \
     -f ./ci/release-container/Dockerfile .
-  docker push codercom/code-server
+  docker push "$imageTag"
 }
 
 main "$@"

@@ -10,7 +10,8 @@ RUN yum update -y && yum install -y \
     openssl \
     libxkbfile-devel \
     libsecret-devel \
-    libx11-devel
+    libx11-devel \
+    gettext
 
 RUN yum install -y epel-release && \
     yum install -y ShellCheck jq golang

@@ -6,18 +6,16 @@ jobs:
       if: tag IS blank
       script: ./ci/container/exec.sh ./ci/steps/test.sh
       deploy: null
-    - name: Linux AMD64 Release #if: tag IS present
+    - name: Linux Release #if: tag IS present
       script: |
         ./ci/steps/linux-release.sh || exit 1
         # We do not use the travis npm deploy integration as it does not allow us to
         # deploy a subpath and and v2 which should, just errors out that the src does not exist
         ./ci/container/exec.sh npm publish release || exit 1
-    - name: Linux ARM64 Release
-      if: tag IS present
+    - name: Linux Release #if: tag IS present
       script: ./ci/steps/linux-release.sh
       arch: arm64
-    - name: MacOS Release
-      if: tag IS present
+    - name: MacOS Release #if: tag IS present
       os: osx
       language: node_js
       node_js: 12

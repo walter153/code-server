@@ -36,6 +36,7 @@ main() {
   if [[ $STATIC ]]; then
     rsync "$RELEASE_PATH/" "$RELEASE_PATH-static"
     RELEASE_PATH+=-static
+    VSCODE_OUT_PATH="$RELEASE_PATH/lib/vscode"
 
     bundle_node
   fi

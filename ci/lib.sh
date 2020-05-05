@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 pushd() {
   builtin pushd "$@" > /dev/null
@@ -30,7 +29,7 @@ os() {
 
 arch() {
   case "$(uname -m)" in
-  aarch)
+  aarch64)
     echo arm64
     ;;
   x86_64)
