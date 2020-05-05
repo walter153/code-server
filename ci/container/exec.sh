@@ -18,8 +18,6 @@ main() {
     $(if [[ -t 0 ]]; then echo -it; fi) \
     "$imageTag" \
     "$*"
-
-  kill $pid
 }
 
 main "$@"

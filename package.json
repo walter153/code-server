@@ -15,7 +15,7 @@
     "vscode:diff": "cd ./lib/vscode && git diff HEAD > ../../ci/dev/vscode.patch",
     "build": "./ci/build/build-code-server.sh && ./ci/build/build-vscode.sh",
     "release": "./ci/build/build-release.sh",
-    "pkg": "./ci/build/build-static-pkgs.sh.sh",
+    "pkg": "./ci/build/build-static-pkgs.sh",
     "_____": "",
     "fmt": "./ci/dev/fmt.sh",
     "lint": "./ci/dev/lint.sh",
